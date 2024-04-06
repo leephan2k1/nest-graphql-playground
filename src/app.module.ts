@@ -21,15 +21,16 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => {
-        const dbOptions = {
+        const dbOptions: TypeOrmModuleOptions = {
           type: 'postgres',
           host: config.get<string>('PG_HOST'),
-          port: config.get<string>('PG_PORT'),
+          port: Number(config.get<string>('PG_PORT')),
           username: config.get<string>('PG_USERNAME'),
           password: config.get<string>('PG_PASSWORD'),
           database: config.get<string>('PG_DB'),
           synchronize: true,
-        } as unknown as TypeOrmModuleOptions;
+          autoLoadEntities: true,
+        };
         return dbOptions;
       },
     }),
