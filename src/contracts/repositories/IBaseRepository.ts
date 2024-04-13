@@ -9,7 +9,7 @@ export interface IBaseRepository<T> {
 
   saveMany(data: DeepPartial<T>[]): Promise<T[]>;
 
-  findOneById(id: number): Promise<T>;
+  findOneById(id: string | number): Promise<T>;
 
   findByCondition(filterCondition: FindOneOptions<T>): Promise<T>;
 
