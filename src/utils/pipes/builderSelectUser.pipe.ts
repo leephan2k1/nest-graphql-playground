@@ -11,14 +11,19 @@ export class BuilderSelectUserPipe implements PipeTransform {
       id: !!userRequest['id'],
       displayName: !!userRequest['displayName'],
       userName: !!userRequest['userName'],
+      createdAt: !!userRequest['createdAt'],
+      updatedAt: !!userRequest['updatedAt'],
     };
 
     if (userRequest['settings']) {
       const userSettingsRequest = userRequest['settings'].fieldsByTypeName?.UserSetting;
       selectUserOptions.settings = {
+        id: !!userSettingsRequest['id'],
         userId: !!userSettingsRequest['userId'],
         receiveEmails: !!userSettingsRequest['receiveEmails'],
         receiveNotifications: !!userSettingsRequest['receiveNotifications'],
+        createdAt: !!userSettingsRequest['createdAt'],
+        updatedAt: !!userSettingsRequest['updatedAt'],
       };
     }
 

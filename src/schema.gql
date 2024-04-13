@@ -3,13 +3,23 @@
 # ------------------------------------------------------
 
 type UserSetting {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   userId: String!
   receiveNotifications: Boolean!
   receiveEmails: Boolean!
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type User {
   id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   userName: String!
   displayName: String
   settings: UserSetting
@@ -22,9 +32,16 @@ type Query {
 
 type Mutation {
   CreateUser(createUserData: CreateUserInputDto!): User!
+  CreateUserSettings(createUserSettingsData: CreateUserSettingsInput!): UserSetting!
 }
 
 input CreateUserInputDto {
   userName: String!
   displayName: String
+}
+
+input CreateUserSettingsInput {
+  userId: String!
+  receiveNotifications: Boolean = false
+  receiveEmails: Boolean = false
 }

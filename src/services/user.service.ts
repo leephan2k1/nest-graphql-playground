@@ -12,6 +12,9 @@ export class UserService implements IUserService {
   public async getUsers(select?: FindOptionsSelect<User>): Promise<User[]> {
     const result = await this.usersRepository.findAll({
       select,
+      relations: {
+        settings: !!select?.settings,
+      },
     });
     return result;
   }
@@ -25,6 +28,9 @@ export class UserService implements IUserService {
     const result = await this.usersRepository.findByCondition({
       select,
       where: { id },
+      relations: {
+        settings: !!select?.settings,
+      },
     });
 
     return result;
