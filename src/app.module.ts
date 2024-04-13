@@ -2,13 +2,14 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { UserResolver } from './graphql/resolvers/user.resolver';
-import { UserSettings } from './graphql/resolvers/userSettings.resolver';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UserModule } from './modules/user.module';
 
 @Module({
   imports: [
+    UserModule,
+
     ConfigModule.forRoot({ cache: true }),
 
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -35,6 +36,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       },
     }),
   ],
-  providers: [UserResolver, UserSettings],
+  providers: [],
 })
 export class AppModule {}

@@ -16,22 +16,15 @@ type User {
 }
 
 type Query {
-  User(id: Int!): User
+  User(id: String!): User
   Users: [User!]!
 }
 
 type Mutation {
-  createUser(createUserData: CreateUserInput!): User!
-  createUserSettings(createUserSettingsData: CreateUserSettingsInput!): UserSetting
+  CreateUser(createUserData: CreateUserInputDto!): User!
 }
 
-input CreateUserInput {
-  username: String!
+input CreateUserInputDto {
+  userName: String!
   displayName: String
-}
-
-input CreateUserSettingsInput {
-  userId: Int!
-  receiveNotifications: Boolean = false
-  receiveEmails: Boolean = false
 }
