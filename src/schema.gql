@@ -25,9 +25,29 @@ type User {
   settings: UserSetting
 }
 
+type PageInfo {
+  total: Int!
+  perPage: Int!
+  currentPage: Int!
+  lastPage: Int!
+  hasNextPage: Boolean!
+}
+
+type UserPage {
+  pageInfo: PageInfo!
+  docs: [User!]!
+}
+
 type Query {
   User(id: String!): User
-  Users: [User!]!
+  Users(page: Int! = 0, limit: Int! = 10, displayNameOrder: FindOptionsOrderValueEnum, createdAtOrder: FindOptionsOrderValueEnum, displayNameSearchTerm: String, userNameSearchTerm: String): UserPage!
+}
+
+enum FindOptionsOrderValueEnum {
+  ASC
+  DESC
+  asc
+  desc
 }
 
 type Mutation {

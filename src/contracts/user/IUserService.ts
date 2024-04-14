@@ -1,9 +1,11 @@
 import { User } from 'src/graphql/models/user.model';
-import { CreateUserInputDto } from 'src/graphql/types/userInputDto';
+import { QueryUsersArgs } from 'src/graphql/types/args/queryUsersArgs';
+import { UserPage } from 'src/graphql/types/dtos/userPageResult';
+import { CreateUserInputDto } from 'src/graphql/types/inputs/userInputDto';
 import { FindOptionsSelect } from 'typeorm';
 
 export interface IUserService {
-  getUsers(select?: FindOptionsSelect<User>): Promise<User[]>;
+  getUsers(select?: FindOptionsSelect<User>, queryUsersArgs?: QueryUsersArgs): Promise<UserPage>;
 
   createUser(createUserData: CreateUserInputDto): Promise<User>;
 

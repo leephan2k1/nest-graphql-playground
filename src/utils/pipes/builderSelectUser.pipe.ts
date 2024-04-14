@@ -1,11 +1,27 @@
 import { PipeTransform } from '@nestjs/common';
 import { User } from '../../graphql/models/user.model';
-import { parseResolveInfo } from 'graphql-parse-resolve-info';
+import { parseResolveInfo, ResolveTree } from 'graphql-parse-resolve-info';
 import { FindOptionsSelect } from 'typeorm';
+import {UserActionsEnum} from '../../graphql/types/enums/actionEnums';
 
 export class BuilderSelectUserPipe implements PipeTransform {
   transform(value: any): FindOptionsSelect<User> {
-    const userRequest = parseResolveInfo(value, { deep: true }).fieldsByTypeName?.User;
+    const queryInfo = parseResolveInfo(value, { deep: true });
+
+    let userRequest:
+      | ResolveTree
+      | {
+          [str: string]: ResolveTree;
+        };
+
+    // single query info
+    if (queryInfo.alias === UserActionsEnum.User) {
+      userRequest = queryInfo.fieldsByTypeName?.User;
+    }
+    // pagination info
+    else {
+      userRequest = queryInfo.fieldsByTypeName?.UserPage['docs']?.fieldsByTypeName?.User;
+    }
 
     const selectUserOptions: FindOptionsSelect<User> = {
       id: !!userRequest['id'],
