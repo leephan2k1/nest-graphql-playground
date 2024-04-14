@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { IUserSettingsService } from 'src/contracts/user/IUserSettingsService';
 import { IUserRepository } from 'src/contracts/repositories/IUserRepository';
-import { CreateUserSettingsInput } from 'src/graphql/types/createUserSettingsInputDto';
+import { CreateUserSettingsInput } from 'src/graphql/types/inputs/createUserSettingsInputDto';
 import { IUserSettingsRepository } from 'src/contracts/repositories/IUserSettingsRepository';
 
 @Injectable()
