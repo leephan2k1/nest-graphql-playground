@@ -15,6 +15,8 @@ export interface IBaseRepository<T> {
 
   findAll(options?: FindManyOptions<T>): Promise<T[]>;
 
+  findAndCount(options?: FindManyOptions<T>): Promise<[T[], number]>;
+
   remove(data: T): Promise<T>;
 
   findWithRelations(relations: FindManyOptions<T>): Promise<T[]>;

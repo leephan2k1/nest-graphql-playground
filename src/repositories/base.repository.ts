@@ -10,9 +10,7 @@ interface HasId {
   id: string;
 }
 
-export abstract class BaseRepository<T extends HasId>
-  implements IBaseRepository<T>
-{
+export abstract class BaseRepository<T extends HasId> implements IBaseRepository<T> {
   private readonly entity: Repository<T>;
 
   protected constructor(entity: Repository<T>) {
@@ -48,6 +46,10 @@ export abstract class BaseRepository<T extends HasId>
 
   public async findWithRelations(relations: FindManyOptions<T>): Promise<T[]> {
     return await this.entity.find(relations);
+  }
+
+  public async findAndCount(options?: FindManyOptions<T>): Promise<[T[], number]> {
+    return await this.entity.findAndCount(options);
   }
 
   public async findAll(options?: FindManyOptions<T>): Promise<T[]> {
