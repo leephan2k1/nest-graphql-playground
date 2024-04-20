@@ -14,10 +14,20 @@ import { AuthModule } from './modules/auth.module';
 
     ConfigModule.forRoot({ cache: true }),
 
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      playground: true,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      useFactory: (config: ConfigService) => {
+        return {
+          playground: true,
+          autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+          formatError: (error) => {
+            return {
+              message: error.message,
+              code: error.extensions?.code
+            };
+          }
+        };
+      },
     }),
 
     TypeOrmModule.forRootAsync({
