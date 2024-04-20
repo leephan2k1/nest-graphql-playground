@@ -23,6 +23,7 @@ import { MutateAuthResponse } from '../types/dtos/mutateAuth.response';
 import { ResponseStatus } from '../types/enums/voidResponseEnums';
 import { ChangePasswordInput } from '../types/inputs/changePassword.input';
 import { JwtAuthGuard } from 'src/guards/jwtAuth.guard';
+import { ValidateInput } from 'src/common/decorators/validateInput.decorator';
 
 @Resolver()
 export class AuthResolver {
@@ -128,6 +129,7 @@ export class AuthResolver {
     return [authUser];
   }
 
+  @ValidateInput()
   @Mutation(() => [RegisterUserResultUnion], {
     name: AuthActionsEnum.SignUpInternal,
   })

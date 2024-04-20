@@ -2,7 +2,7 @@ import { PipeTransform } from '@nestjs/common';
 import { User } from '../../graphql/models/user.model';
 import { parseResolveInfo, ResolveTree } from 'graphql-parse-resolve-info';
 import { FindOptionsSelect } from 'typeorm';
-import {UserActionsEnum} from '../../graphql/types/enums/actionEnums';
+import { UserActionsEnum } from '../../graphql/types/enums/actionEnums';
 
 export class BuilderSelectUserPipe implements PipeTransform {
   transform(value: any): FindOptionsSelect<User> {
@@ -20,7 +20,8 @@ export class BuilderSelectUserPipe implements PipeTransform {
     }
     // pagination info
     else {
-      userRequest = queryInfo.fieldsByTypeName?.UserPage['docs']?.fieldsByTypeName?.User;
+      userRequest =
+        queryInfo.fieldsByTypeName?.UserPage['docs']?.fieldsByTypeName?.User;
     }
 
     const selectUserOptions: FindOptionsSelect<User> = {
@@ -32,7 +33,8 @@ export class BuilderSelectUserPipe implements PipeTransform {
     };
 
     if (userRequest['settings']) {
-      const userSettingsRequest = userRequest['settings'].fieldsByTypeName?.UserSetting;
+      const userSettingsRequest =
+        userRequest['settings'].fieldsByTypeName?.UserSetting;
       selectUserOptions.settings = {
         id: !!userSettingsRequest['id'],
         userId: !!userSettingsRequest['userId'],
