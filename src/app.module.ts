@@ -6,18 +6,32 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './modules/user.module';
 import { AuthModule } from './modules/auth.module';
+import { envSchema } from './configs/env.schema';
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
 
-    ConfigModule.forRoot({ cache: true }),
+    ConfigModule.forRoot({
+      cache: true,
+      validationSchema: envSchema,
+    }),
 
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      playground: true,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      useFactory: (config: ConfigService) => {
+        return {
+          playground: true,
+          autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+          formatError: (error) => {
+            return {
+              message: error.message,
+              code: error.extensions?.code,
+            };
+          },
+        };
+      },
     }),
 
     TypeOrmModule.forRootAsync({

@@ -2,7 +2,7 @@ import { Args, Info, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { User } from '../models/user.model';
 import { Inject, UseGuards } from '@nestjs/common';
 import { IUserService } from 'src/contracts/user/IUserService';
-import { BuilderSelectUserPipe } from '../../utils/pipes/builderSelectUser.pipe';
+import { BuilderSelectUserPipe } from '../../common/pipes/builderSelectUser.pipe';
 import { QueryUsersArgs } from '../types/args/queryUsersArgs';
 import { UserPage } from '../types/dtos/userPageResult';
 import { UserActionsEnum } from '../types/enums/actionEnums';
