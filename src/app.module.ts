@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './modules/user.module';
 import { AuthModule } from './modules/auth.module';
 import { envSchema } from './configs/env.schema';
+import { ThrottlerModule, ThrottlerModuleOptions } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -49,6 +50,23 @@ import { envSchema } from './configs/env.schema';
           autoLoadEntities: true,
         };
         return dbOptions;
+      },
+    }),
+
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (
+        config: ConfigService,
+      ): Promise<ThrottlerModuleOptions> => {
+        return {
+          throttlers: [
+            {
+              ttl: config.get<number>('SECURITY_THROTTLE_TTL'),
+              limit: config.get<number>('SECURITY_THROTTLE_LIMIT'),
+            },
+          ],
+        };
       },
     }),
   ],

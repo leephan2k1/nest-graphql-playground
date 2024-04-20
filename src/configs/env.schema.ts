@@ -1,6 +1,9 @@
 import * as Joi from 'joi';
 
 export const envSchema = Joi.object({
+  //client setup (optional)
+  CLIENT_URL: Joi.string().optional(),
+
   //server application setup
   NODE_ENV: Joi.string()
     .valid('local', 'development', 'production', 'test')
@@ -47,4 +50,8 @@ export const envSchema = Joi.object({
     then: Joi.required(),
     otherwise: Joi.optional().default('182d'),
   }),
+
+  //rate limit (optional)
+  SECURITY_THROTTLE_TTL: Joi.number().optional().default(60_000),
+  SECURITY_THROTTLE_LIMIT: Joi.number().optional().default(1_000_000),
 });
