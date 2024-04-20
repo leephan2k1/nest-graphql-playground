@@ -1,10 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
-export class CreateUserInputDto {
-  @Field()
-  userName: string;
-
+export class SignOutUserInput {
   @Field({ nullable: true })
-  displayName?: string;
+  refresh_token?: string;
 }

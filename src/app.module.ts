@@ -5,10 +5,12 @@ import { join } from 'path';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './modules/user.module';
+import { AuthModule } from './modules/auth.module';
 
 @Module({
   imports: [
     UserModule,
+    AuthModule,
 
     ConfigModule.forRoot({ cache: true }),
 

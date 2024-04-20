@@ -12,9 +12,10 @@ import { UserSettingsService } from 'src/services/userSettings.service';
 import { UserSettingsResolver } from '../graphql/resolvers/userSettings.resolver';
 import { IUserSettingsRepository } from 'src/contracts/repositories/IUserSettingsRepository';
 import { UserSettingsRepository } from 'src/repositories/userSettings.repository';
+import { SocialProvider } from '../graphql/models/socialProvider.model';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, UserSetting])],
+  imports: [TypeOrmModule.forFeature([User, UserSetting, SocialProvider])],
   providers: [
     UserResolver,
     UserSettingsResolver,
@@ -33,6 +34,16 @@ import { UserSettingsRepository } from 'src/repositories/userSettings.repository
     {
       provide: IUserSettingsRepository,
       useClass: UserSettingsRepository,
+    },
+  ],
+  exports: [
+    {
+      provide: IUserService,
+      useClass: UserService,
+    },
+    {
+      provide: IUserRepository,
+      useClass: UserRepository,
     },
   ],
 })
