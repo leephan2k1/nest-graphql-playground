@@ -1,37 +1,31 @@
 import { Args, Info, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { User } from '../models/user.model';
-import { Inject } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { IUserService } from 'src/contracts/user/IUserService';
-import { CreateUserInputDto } from '../types/inputs/userInputDto';
 import { BuilderSelectUserPipe } from '../../utils/pipes/builderSelectUser.pipe';
 import { QueryUsersArgs } from '../types/args/queryUsersArgs';
 import { UserPage } from '../types/dtos/userPageResult';
-import {UserActionsEnum} from '../types/enums/actionEnums';
+import { UserActionsEnum } from '../types/enums/actionEnums';
+import { JwtAuthGuard } from 'src/guards/jwtAuth.guard';
+import { GqlUser } from 'src/common/decorators/gql-user.decorator';
 
 @Resolver((of) => User)
 export class UserResolver {
-  constructor(@Inject(IUserService) private readonly userService: IUserService) {}
+  constructor(
+    @Inject(IUserService) private readonly userService: IUserService,
+  ) {}
 
-  @Query((returns) => User, { name: UserActionsEnum.User, nullable: true })
-  getUserById(
-    @Args('id', { type: () => String }) id: string, 
-    @Info(BuilderSelectUserPipe) selectUserOptions
-  ) {
-    return this.userService.getUserById(id, selectUserOptions);
+  @Query(() => User, { name: UserActionsEnum.User })
+  @UseGuards(JwtAuthGuard)
+  getUserStatus(@GqlUser() currentUser: User): Promise<User> {
+    return Promise.resolve(currentUser);
   }
 
   @Query(() => UserPage, { name: UserActionsEnum.Users })
   getUsers(
     @Info(BuilderSelectUserPipe) selectUserOptions,
-    @Args() queryUsersArgs: QueryUsersArgs
+    @Args() queryUsersArgs: QueryUsersArgs,
   ) {
-    console.log('queryUsersArgs: ', queryUsersArgs)
     return this.userService.getUsers(selectUserOptions, queryUsersArgs);
-  }
-
-  @Mutation((returns) => User, { name: UserActionsEnum.CreateUser })
-  createUser(@Args('createUserData') createUserData: CreateUserInputDto) {
-    console.log(createUserData);
-    return this.userService.createUser(createUserData);
   }
 }
