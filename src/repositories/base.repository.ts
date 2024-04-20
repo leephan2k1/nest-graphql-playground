@@ -4,8 +4,12 @@ import {
   Repository,
   DeepPartial,
   FindOptionsWhere,
+  DeleteResult,
+  UpdateResult,
+  ObjectLiteral,
 } from 'typeorm';
 import { IBaseRepository } from '../contracts/repositories/IBaseRepository';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 interface HasId {
   id: string;
 }
@@ -33,6 +37,11 @@ export abstract class BaseRepository<T extends HasId> implements IBaseRepository
     return this.entity.create(data);
   }
 
+  public async update(options: FindOptionsWhere<T>, partialEntity: QueryDeepPartialEntity<ObjectLiteral extends T ? unknown : T>): Promise<UpdateResult> {
+    //@ts-ignore
+    return this.entity.update(options, partialEntity)
+  }
+
   public async findOneById(id: any): Promise<T> {
     const options: FindOptionsWhere<T> = {
       id: id,
@@ -48,7 +57,9 @@ export abstract class BaseRepository<T extends HasId> implements IBaseRepository
     return await this.entity.find(relations);
   }
 
-  public async findAndCount(options?: FindManyOptions<T>): Promise<[T[], number]> {
+  public async findAndCount(
+    options?: FindManyOptions<T>,
+  ): Promise<[T[], number]> {
     return await this.entity.findAndCount(options);
   }
 
@@ -58,6 +69,10 @@ export abstract class BaseRepository<T extends HasId> implements IBaseRepository
 
   public async remove(data: T): Promise<T> {
     return await this.entity.remove(data);
+  }
+
+  public async delete(options: FindOptionsWhere<T>): Promise<DeleteResult> {
+    return await this.entity.delete(options);
   }
 
   public async preload(entityLike: DeepPartial<T>): Promise<T> {
