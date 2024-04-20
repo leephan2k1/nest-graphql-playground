@@ -20,7 +20,8 @@ type User {
   id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  userName: String!
+  userName: String
+  email: String!
   displayName: String
   settings: UserSetting
 }
@@ -38,8 +39,13 @@ type UserPage {
   docs: [User!]!
 }
 
+type InputError {
+  field: String!
+  messages: [String!]!
+}
+
 type Query {
-  User(id: String!): User
+  User: User!
   Users(page: Int! = 0, limit: Int! = 10, displayNameOrder: FindOptionsOrderValueEnum, createdAtOrder: FindOptionsOrderValueEnum, displayNameSearchTerm: String, userNameSearchTerm: String): UserPage!
 }
 
@@ -51,17 +57,110 @@ enum FindOptionsOrderValueEnum {
 }
 
 type Mutation {
-  CreateUser(createUserData: CreateUserInputDto!): User!
   CreateUserSettings(createUserSettingsData: CreateUserSettingsInput!): UserSetting!
-}
-
-input CreateUserInputDto {
-  userName: String!
-  displayName: String
+  SignInInternal(loginUserInput: LoginUserInput!): [LoginUserResult!]!
+  ChangePassword(changePasswordInput: ChangePasswordInput!): [SignOutUserResult!]!
+  SignInExternal(input: LoginSocialInput!): [LoginSocialResult!]!
+  SignUpExternal(input: RegisterSocialInput!): [RegisterSocialResult!]!
+  RefreshToken: [LoginUserResult!]!
+  SignUpInternal(registerUserInput: RegisterUserInput!): [RegisterUserResult!]!
+  SignOut(signOutUserInput: SignOutUserInput!): [SignOutUserResult!]!
 }
 
 input CreateUserSettingsInput {
   userId: String!
   receiveNotifications: Boolean = false
   receiveEmails: Boolean = false
+}
+
+union LoginUserResult = AuthUserResponse | InvalidCredentialsError
+
+type AuthUserResponse {
+  user: User!
+  access_token: String!
+  refresh_token: String!
+}
+
+type InvalidCredentialsError implements ErrorResponse {
+  message: String!
+  userId: String
+  providedEmail: String!
+}
+
+interface ErrorResponse {
+  message: String!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+union SignOutUserResult = MutateAuthResponse | InvalidCredentialsError
+
+type MutateAuthResponse {
+  status: ResponseStatus!
+}
+
+enum ResponseStatus {
+  Success
+  Error
+  Pending
+}
+
+input ChangePasswordInput {
+  newPassword: String!
+  currentPassword: String!
+}
+
+union LoginSocialResult = AuthUserResponse | SocialNotRegisteredError
+
+type SocialNotRegisteredError implements ErrorResponse {
+  message: String!
+  provider: SocialAuthProviders!
+}
+
+enum SocialAuthProviders {
+  FACEBOOK
+  GOOGLE
+}
+
+input LoginSocialInput {
+  accessToken: String!
+  provider: SocialAuthProviders!
+}
+
+union RegisterSocialResult = AuthUserResponse | SocialAlreadyAssignedError | CredentialsTakenError
+
+type SocialAlreadyAssignedError implements ErrorResponse {
+  message: String!
+  provider: SocialAuthProviders!
+}
+
+type CredentialsTakenError implements ErrorResponse {
+  message: String!
+  providedEmail: String!
+  providedUsername: String
+}
+
+input RegisterSocialInput {
+  accessToken: String!
+  provider: SocialAuthProviders!
+  username: String!
+}
+
+union RegisterUserResult = AuthUserResponse | InvalidInputError | CredentialsTakenError
+
+type InvalidInputError implements ErrorResponse {
+  message: String!
+  errors: [InputError!]!
+}
+
+input RegisterUserInput {
+  email: String!
+  password: String!
+}
+
+input SignOutUserInput {
+  refresh_token: String
 }
