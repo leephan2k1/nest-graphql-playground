@@ -7,11 +7,13 @@ import { QueryUsersArgs } from '../graphql/types/args/queryUsersArgs';
 import { UserPage } from '../graphql/types/dtos/userPageResult';
 import { IPaginateResult } from 'src/contracts/pagination/IPaginateResult';
 import { SocialProvider } from 'src/graphql/models/socialProvider.model';
-
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 @Injectable()
 export class UserService implements IUserService {
   constructor(
     @Inject(IUserRepository) private readonly usersRepository: IUserRepository,
+    @Inject(CACHE_MANAGER) private cacheService: Cache,
     private dataSource: DataSource,
   ) {}
 
@@ -36,6 +38,7 @@ export class UserService implements IUserService {
     select?: FindOptionsSelect<User>,
     queryUsersArgs?: QueryUsersArgs,
   ): Promise<UserPage> {
+    console.time('get users');
     const [result, count] = await this.usersRepository.findAndCount({
       select: {
         ...select,
@@ -70,7 +73,7 @@ export class UserService implements IUserService {
       },
       docs: result,
     };
-
+    console.timeEnd('get users');
     return userPage;
   }
 
@@ -98,7 +101,10 @@ export class UserService implements IUserService {
     return result;
   }
 
-  public async updateUserPassword(userId: string, newPassword: string): Promise<User> {
+  public async updateUserPassword(
+    userId: string,
+    newPassword: string,
+  ): Promise<User> {
     const user = await this.usersRepository.findOneById(userId);
 
     if (!user) {
