@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
+import { AppClusterService } from './services/cluster.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -44,4 +45,10 @@ async function bootstrap() {
 
   await app.listen(3000);
 }
-bootstrap();
+
+if (process.env.NODE_ENV !== 'local') {
+  // will use all CPUs to start cluster mode
+  AppClusterService.clusterize(bootstrap);
+} else {
+  bootstrap();
+}
