@@ -8,11 +8,34 @@ import { UserModule } from './modules/user.module';
 import { AuthModule } from './modules/auth.module';
 import { envSchema } from './configs/env.schema';
 import { ThrottlerModule, ThrottlerModuleOptions } from '@nestjs/throttler';
+import { CacheModule } from '@nestjs/cache-manager';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
+
+    // CacheModule.registerAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   isGlobal: true,
+    //   useFactory: async (config: ConfigService) => {
+    //     console.log('redis setup: ',  {
+    //       store: redisStore,
+    //       host: config.get('REDIS_HOST'),
+    //       port: config.get('REDIS_PORT'),
+    //       password: config.get('REDIS_PASSWORD'),
+    //     })
+
+    //     return {
+    //       store: redisStore,
+    //       host: config.get('REDIS_HOST'),
+    //       port: config.get('REDIS_PORT'),
+    //       password: config.get('REDIS_PASSWORD'),
+    //     }
+    //   },
+    // }),
 
     ConfigModule.forRoot({
       cache: true,

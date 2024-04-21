@@ -26,6 +26,7 @@ export class BuilderSelectUserPipe implements PipeTransform {
 
     const selectUserOptions: FindOptionsSelect<User> = {
       id: !!userRequest['id'],
+      email: !!userRequest['email'],
       displayName: !!userRequest['displayName'],
       userName: !!userRequest['userName'],
       createdAt: !!userRequest['createdAt'],
