@@ -7,13 +7,13 @@ import { QueryUsersArgs } from '../graphql/types/args/queryUsersArgs';
 import { UserPage } from '../graphql/types/dtos/userPageResult';
 import { IPaginateResult } from 'src/contracts/pagination/IPaginateResult';
 import { SocialProvider } from 'src/graphql/models/socialProvider.model';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
+// import { CACHE_MANAGER } from '@nestjs/cache-manager';
+// import { Cache } from 'cache-manager';
 @Injectable()
 export class UserService implements IUserService {
   constructor(
     @Inject(IUserRepository) private readonly usersRepository: IUserRepository,
-    @Inject(CACHE_MANAGER) private cacheService: Cache,
+    // @Inject(CACHE_MANAGER) private cacheService: Cache,
     private dataSource: DataSource,
   ) {}
 
